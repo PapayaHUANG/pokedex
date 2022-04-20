@@ -1,0 +1,17 @@
+.flipper {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.flipper__button {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  color: rgba(32, 30, 30, 0.836);
+}
+
+.flipper__button :hover {
+  color: tomato;
+}

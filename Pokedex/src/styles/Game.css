@@ -1,0 +1,68 @@
+.game-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 150px;
+}
+
+.game-page-score-board {
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.game-page-card {
+  width: 250px;
+}
+
+.game-page-card-container {
+  border-radius: 15px;
+  border: solid white 10px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  padding: 10px;
+  position: relative;
+  font-weight: 800;
+  background: linear-gradient(
+    0deg,
+    rgba(250, 250, 250, 0),
+    5%,
+    rgb(160, 155, 155)
+  );
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.game-page-card-container > img {
+  width: 100%;
+  padding: 60px 0;
+  filter: brightness(0);
+}
+
+.game-page-buttons > button {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  margin: 0 10px;
+  padding: 2px 15px;
+  border-radius: 15px;
+  border: none;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.game-page-gameover {
+  position: absolute;
+  background-color: white;
+  top: 40%;
+  z-index: 2;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-page-gameover > div {
+  padding: 20px 0;
+}
