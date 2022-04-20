@@ -1,3 +1,3 @@
 # Test
 
-The major content will be uploaded soon!
+The major content will be uploaded soon.
