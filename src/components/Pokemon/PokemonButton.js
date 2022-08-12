@@ -1,22 +1,17 @@
 import { useState, useEffect } from 'react';
-import { fetchPokemonButton } from '../../helper/GetPokemons';
+
 import {
   changeIdFormat,
   changePokemonNameCase,
 } from '../../helper/GlobalFunctions';
 import { getPokemonColor } from '../../helper/GetColorType';
 import { useNavigate } from 'react-router-dom';
-export default function PokemonButton({ pokemon }) {
-  const [button, setButton] = useState(null);
+
+export default function PokemonButton({ button }) {
   let navigate = useNavigate();
 
-  useEffect(() => {
-    const getButton = async (pokemon) => {
-      const data = await fetchPokemonButton(pokemon);
-      setButton(data);
-    };
-    getButton(pokemon);
-  }, []);
+  console.log(button);
+
   return (
     <div className="pokemon-buttons">
       <h4 className="pokemon-buttons__id">#{changeIdFormat(button?.id)}</h4>

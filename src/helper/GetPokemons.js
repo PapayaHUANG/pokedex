@@ -5,7 +5,7 @@ const URL = 'https://pokeapi.co/api/v2/';
 
 export const fetchPokemonData = async (preNum, nextNum) => {
   const data = await axios
-    .get(`${URL}pokemon?limit=1126`)
+    .get(`${URL}pokemon?limit=100000`)
     .then((res) => res.data);
 
   const list = Promise.all(
@@ -128,21 +128,28 @@ export const fetchPokemonEvolution = async (name) => {
       const list = res.filter((list) => list.includes(name));
       return list;
     });
+  console.log(evo_list);
 
   return evo_list;
 };
 
-export const fetchPokemonButton = async (pokemon) => {
-  const data = await axios
-    .get(`${URL}pokemon/${pokemon}`)
-    .then((res) => res.data);
+export const fetchPokemonButtons = async (pokemonList) => {
+  const button = Promise.all(
+    pokemonList.map(async (pokemon) => {
+      const data = await axios
+        .get(`${URL}pokemon/${pokemon}`)
+        .then((res) => res.data);
+      return {
+        id: data.id,
+        name: data.name,
+        sprite: getPokemonSprite(data.id),
+        types: data.types.map((type) => type.type.name),
+      };
+    })
+  ).then((res) => {
+    return res;
+  });
 
-  const button = {
-    id: data.id,
-    name: data.name,
-    sprite: getPokemonSprite(data.id),
-    types: data.types.map((type) => type.type.name),
-  };
   return button;
 };
 
