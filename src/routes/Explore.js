@@ -17,21 +17,33 @@ export default function Explore({ searchWord, type }) {
   const { nextPage } = usePageNum();
 
   useEffect(() => {
+    let isMounted = true;
     const fetchAllData = async (prePage, nextPage, searchWord, type) => {
       if (searchWord) {
         const allData = await fetchPokemonByName(prePage, nextPage, searchWord);
-        setData(allData);
+        if (isMounted) {
+          setData(allData);
+        }
       }
       if (type) {
         const allData = await fetchPokemonType(prePage, nextPage, type);
-        setData(allData);
+        if (isMounted) {
+          setData(allData);
+        }
       }
       if (searchWord === null && type === null) {
         const allData = await fetchPokemonData(prePage, nextPage);
-        setData(allData);
+        if (isMounted) {
+          setData(allData);
+        }
       }
     };
+
     fetchAllData(prePage, nextPage, searchWord, type);
+
+    return () => {
+      isMounted = false;
+    };
   }, [prePage, nextPage, searchWord, type]);
 
   return (

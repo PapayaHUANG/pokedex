@@ -10,21 +10,37 @@ export default function Evolution({ name }) {
   const [buttons, setButtons] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const getEvolutionChain = async (name) => {
       const pokemon = await fetchPokemonEvolution(name);
-      setChain(pokemon[0]);
+      if (isMounted) {
+        setChain(pokemon[0]);
+      }
     };
+
     getEvolutionChain(name);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   console.log(chain);
 
   useEffect(() => {
+    let isMounted = true;
     const getButton = async (chain) => {
       const data = await fetchPokemonButtons(chain);
-      setButtons(data);
+      if (isMounted) {
+        setButtons(data);
+      }
     };
+
     getButton(chain);
+
+    return () => {
+      isMounted = false;
+    };
   }, [chain]);
 
   console.log(buttons);

@@ -23,7 +23,13 @@ export default function Card({ id, name, types, sprite }) {
         </Link>
         <h3 className="card__id"># {changeIdFormat(id)}</h3>
 
-        <img src={sprite} alt={name} className="card__sprite"></img>
+        <img
+          src={sprite}
+          alt={name}
+          className="card__sprite"
+          width="80%"
+          height="70%"
+        ></img>
         <div className="card__type-wrapper">
           {types.map((type) => {
             return (
@@ -32,7 +38,8 @@ export default function Card({ id, name, types, sprite }) {
                 alt={type}
                 className="card__type-wrapper__type-icon"
                 key={type}
-                style={{ maxWidth: '170px' }}
+                width="170px"
+                height="auto"
               ></img>
             );
           })}

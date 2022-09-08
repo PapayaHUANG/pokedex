@@ -13,11 +13,19 @@ export default function Pokemon() {
   const [cardData, setCardData] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const getPokemon = async (id) => {
       const pokemon = await fetchOnePokemon(id);
-      setCardData(pokemon);
+      if (isMounted) {
+        setCardData(pokemon);
+      }
     };
+
     getPokemon(id);
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   return (

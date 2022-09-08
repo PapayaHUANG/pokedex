@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer, useCallback } from 'react';
 import { fetchRandomPokemon } from '../helper/GetPokemons';
 import { getPokemonColor } from '../helper/GetColorType';
 import { changePokemonNameCase } from '../helper/GlobalFunctions';
@@ -8,66 +8,113 @@ import { FaRedo } from 'react-icons/fa';
 import '../styles/Game.css';
 
 export default function Game() {
-  const [data, setData] = useState(null);
-  const [reveal, setReveal] = useState(false);
-  const [answer, setAnswer] = useState('');
-  const [score, setScore] = useState(0);
-  const [heartNum, setHeartNum] = useState(3);
-  const [fetch, setFetch] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
-
-  const setBackgroundColor = (option) => {
-    if (reveal) {
-      if (answer === data.name) {
-        if (answer === option) {
-          return 'rgb(157, 229, 157)';
-        }
-        if (answer !== option) {
-          return 'white';
-        }
-      }
-      if (answer !== data.name) {
-        if (answer === option) {
-          return 'rgb(238, 171, 171)';
-        }
-        if (option === data.name) {
-          return 'rgb(157, 229, 157)';
-        }
-      } else {
-        return 'white';
-      }
-    }
+  const initialState = {
+    isRevealed: false,
+    isFetch: true,
+    score: 0,
+    heartNum: 3,
+    isGameOver: false,
   };
+  const [data, setData] = useState(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const buttonHandler = (e) => {
-    setReveal(true);
-    setAnswer(e.target.value);
+  function buttonHandler(e) {
     if (e.target.value === data.name) {
-      setScore((score) => score + 1);
+      dispatch({ type: 'right' });
     }
     if (e.target.value !== data.name) {
-      setHeartNum((heartNum) => heartNum - 1);
+      dispatch({ type: 'wrong' });
     }
-
-    setTimeout(() => {
-      setReveal(false);
-      setFetch(!fetch);
-    }, 2000);
-  };
+  }
 
   useEffect(() => {
+    if (!state.isFetch) {
+      return;
+    }
+    let isMounted = true;
     const fetchData = async () => {
       const data = await fetchRandomPokemon();
-      setData(data);
+      if (isMounted) {
+        setData(data);
+      }
+      return () => {
+        isMounted = false;
+      };
     };
     fetchData();
-  }, [fetch]);
+  }, [state.isFetch]);
 
   useEffect(() => {
-    if (heartNum === 0) {
-      setIsGameOver(true);
+    if (state.heartNum === 0) {
+      dispatch({ type: 'gameover' });
+    } else {
+      if (!state.isGameOver) {
+        setTimeout(() => {
+          dispatch({ type: 'next' });
+        }, 2000);
+      } else {
+        return;
+      }
     }
-  }, [heartNum]);
+  }, [state.isRevealed]);
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'right':
+        return {
+          ...state,
+          isRevealed: true,
+          score: state.score + 1,
+          isFetch: false,
+        };
+      case 'wrong':
+        return {
+          ...state,
+          isRevealed: true,
+          heartNum: state.heartNum - 1,
+          isFetch: false,
+        };
+      case 'next':
+        return {
+          ...state,
+          isRevealed: false,
+          isFetch: true,
+        };
+      case 'gameover':
+        return {
+          ...state,
+          isGameOver: true,
+          isFetch: false,
+        };
+      case 'restart':
+        return initialState;
+      default:
+        return state;
+    }
+  }
+
+  // const setBackgroundColor = (option) => {
+  //   if (reveal) {
+  //     if (answer === data.name) {
+  //       if (answer === option) {
+  //         return 'rgb(157, 229, 157)';
+  //       }
+  //       if (answer !== option) {
+  //         return 'white';
+  //       }
+  //     }
+  //     if (answer !== data.name) {
+  //       if (answer === option) {
+  //         return 'rgb(238, 171, 171)';
+  //       }
+  //       if (option === data.name) {
+  //         return 'rgb(157, 229, 157)';
+  //       }
+  //     } else {
+  //       return 'white';
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -75,24 +122,20 @@ export default function Game() {
       <div className="game-page-container">
         <h1 className="game-page-title">Who Am I?</h1>
         <section className="game-page-score-board">
-          <span className="game-page-score-board__score">score:{score}</span>
+          <span className="game-page-score-board__score">
+            score:{state.score}
+          </span>
           <span className="game-page-score-board__life-vol">
-            <LifeVolHeart heartNum={heartNum} />
+            <LifeVolHeart heartNum={state.heartNum} />
           </span>
         </section>
-        {isGameOver && (
+        {state.isGameOver && (
           <section className="game-page-gameover">
             <h1>Game Over</h1>
-            <div>Score: {score}</div>
+            <div>Score: {state.score}</div>
 
             <div>
-              <FaRedo
-                onClick={() => {
-                  setIsGameOver(false);
-                  setScore(0);
-                  setHeartNum(3);
-                }}
-              />
+              <FaRedo onClick={() => dispatch({ type: 'restart' })} />
             </div>
           </section>
         )}
@@ -107,7 +150,7 @@ export default function Game() {
             <img
               src={data?.sprite}
               alt="guess the pokemon"
-              style={{ filter: `brightness(${reveal ? 1 : 0})` }}
+              style={{ filter: `brightness(${state.isRevealed ? 1 : 0})` }}
             />
           </div>
         </section>
@@ -115,13 +158,13 @@ export default function Game() {
           {data?.options.map((option, i) => {
             return (
               <button
-                disabled={isGameOver ? true : false}
+                disabled={state.isGameOver ? true : false}
                 onClick={(e) => {
                   buttonHandler(e);
                 }}
                 key={i}
                 value={option}
-                style={{ background: setBackgroundColor(option) }}
+                // style={{ background: setBackgroundColor(option) }}
               >
                 {changePokemonNameCase(option)}
               </button>
