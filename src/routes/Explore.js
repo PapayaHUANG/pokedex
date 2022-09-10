@@ -20,19 +20,20 @@ export default function Explore({ searchWord, type }) {
     let isMounted = true;
     const fetchAllData = async (prePage, nextPage, searchWord, type) => {
       if (searchWord) {
-        const allData = await fetchPokemonByName(prePage, nextPage, type);
+        const allData = await fetchPokemonByName(prePage, nextPage, searchWord);
 
         if (isMounted) {
           setData(allData);
         }
       }
+
       if (type) {
         const allData = await fetchPokemonType(prePage, nextPage, type);
         if (isMounted) {
           setData(allData);
         }
       }
-      if (searchWord === null && type === null) {
+      if ((searchWord === null && type === null) || searchWord === '') {
         const allData = await fetchPokemonData(prePage, nextPage);
         if (isMounted) {
           setData(allData);
