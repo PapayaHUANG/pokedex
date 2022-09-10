@@ -20,7 +20,8 @@ export default function Explore({ searchWord, type }) {
     let isMounted = true;
     const fetchAllData = async (prePage, nextPage, searchWord, type) => {
       if (searchWord) {
-        const allData = await fetchPokemonByName(prePage, nextPage, searchWord);
+        const allData = await fetchPokemonByName(prePage, nextPage, type);
+
         if (isMounted) {
           setData(allData);
         }
@@ -45,6 +46,8 @@ export default function Explore({ searchWord, type }) {
       isMounted = false;
     };
   }, [prePage, nextPage, searchWord, type]);
+
+  console.log(searchWord);
 
   return (
     <>

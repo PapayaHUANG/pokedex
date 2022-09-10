@@ -16,7 +16,7 @@ function App() {
       <PageNumProvider>
         <section className="home__main">
           <section className="menu">
-            <Searchbar setSearchWord={setSearchWord} />
+            <Searchbar setSearchWord={setSearchWord} searchWord={searchWord} />
             <FilterByType setType={setType} />
           </section>
           <Explore searchWord={searchWord} type={type} />
