@@ -7,7 +7,7 @@ import Pokemon from './routes/Pokemon';
 import NotFound from './routes/NotFound';
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/pokedex">
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="Game" element={<Game />} />
