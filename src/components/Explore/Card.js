@@ -6,6 +6,7 @@ import {
   changePokemonNameCase,
 } from '../../helper/GlobalFunctions';
 import '../../styles/Card.css';
+import ProgressiveImage from '../ProgressiveImage';
 import { FaInfoCircle } from 'react-icons/fa';
 
 export default function Card({ id, name, types, sprite }) {
@@ -22,14 +23,14 @@ export default function Card({ id, name, types, sprite }) {
           <FaInfoCircle className="card__info-button" />
         </Link>
         <h3 className="card__id"># {changeIdFormat(id)}</h3>
-
-        <img
+        <ProgressiveImage imgSrc={sprite} alt={name} />
+        {/* <img
           src={sprite}
           alt={name}
           className="card__sprite"
           width="80%"
           height="70%"
-        ></img>
+        ></img> */}
         <div className="card__type-wrapper">
           {types.map((type) => {
             return (

@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import {
   changeIdFormat,
   changePokemonNameCase,
@@ -9,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function PokemonButton({ button }) {
   let navigate = useNavigate();
-
-  console.log(button);
 
   return (
     <div className="pokemon-buttons">
@@ -23,6 +19,13 @@ export default function PokemonButton({ button }) {
         ${getPokemonColor(button?.types[0])}`,
         }}
       >
+        <div
+          id={button?.id}
+          onClick={(e) => {
+            console.log(e.target);
+            navigate(`/pokemon/${e.target.id}`);
+          }}
+        ></div>
         <img
           className="pokemon-buttons__sprites"
           src={button?.sprite}

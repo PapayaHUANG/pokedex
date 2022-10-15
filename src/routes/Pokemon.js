@@ -43,7 +43,7 @@ export default function Pokemon() {
         </div>
         <div className="pokemon-container__right">
           {cardData && <PokemonBio {...cardData} />}
-          {cardData && <Evolution name={cardData.name} />}
+          {cardData && <Evolution name={cardData.name} id={id} />}
         </div>
       </section>
     </>

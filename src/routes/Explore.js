@@ -48,8 +48,6 @@ export default function Explore({ searchWord, type }) {
     };
   }, [prePage, nextPage, searchWord, type]);
 
-  console.log(searchWord);
-
   return (
     <>
       <div className="main">

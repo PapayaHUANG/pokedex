@@ -95,42 +95,39 @@ export const fetchOnePokemon = async (id) => {
   return pokemon;
 };
 
-export const fetchPokemonEvolution = async (name) => {
+export const fetchPokemonEvolution = async (name, id) => {
   const data = await axios
     .get(`${URL}evolution-chain/?limit=468`)
     .then((res) => res.data);
+  const left = Math.floor(id / 3 - 1);
+  const right = Math.floor(id / 2);
 
-  const evo_list = Promise.all(
-    data.results.map(async (item) => {
-      const evo_chain = await axios.get(item.url).then((res) => res.data);
-
-      return [evo_chain.chain];
+  const evo_list = await Promise.all(
+    data.results.slice(left, right).map(async (item) => {
+      const evo_chain = await axios.get(item.url).then((res) => res.data.chain);
+      return [evo_chain];
     })
-  )
-    .then((res) => {
-      const allResults = [];
-      res.map((item) => {
-        const result = [];
-        const getEvo = (treeData, arr) => {
-          treeData.map((element) => {
-            arr.push(element.species.name);
-            if (element.evolves_to && element.evolves_to.length > 0) {
-              getEvo(element.evolves_to, arr);
-            }
-          });
-        };
-        getEvo(item, result);
-        allResults.push(result);
+  );
+
+  const allResults = [];
+  evo_list.map((list) => {
+    const result = [];
+    const getEvo = (treeData, arr) => {
+      treeData.map((element) => {
+        arr.push(element.species.name);
+        if (element.evolves_to && element.evolves_to.length > 0) {
+          getEvo(element.evolves_to, arr);
+        }
       });
-      return allResults;
-    })
-    .then((res) => {
-      const list = res.filter((list) => list.includes(name));
-      return list;
-    });
-  console.log(evo_list);
+    };
+    getEvo(list, result);
+    allResults.push(result);
+  });
+  console.log(allResults);
 
-  return evo_list;
+  const list = allResults.filter((list) => list.includes(name));
+  console.log(list);
+  return list;
 };
 
 export const fetchPokemonButtons = async (pokemonList) => {
