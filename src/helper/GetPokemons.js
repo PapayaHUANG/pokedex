@@ -99,11 +99,14 @@ export const fetchPokemonEvolution = async (name, id) => {
   const data = await axios
     .get(`${URL}evolution-chain/?limit=468`)
     .then((res) => res.data);
-  const left = Math.floor(id / 3 - 1);
-  const right = Math.floor(id / 2);
+
+  const left = id > 3 ? Math.floor(id / 3 - 3) : 0;
+  const right = id > 3 ? Math.ceil(id / 2 + 2) : 1;
+
+  const slicedData = data.results.slice(left, right);
 
   const evo_list = await Promise.all(
-    data.results.slice(left, right).map(async (item) => {
+    slicedData.map(async (item) => {
       const evo_chain = await axios.get(item.url).then((res) => res.data.chain);
       return [evo_chain];
     })
@@ -123,10 +126,9 @@ export const fetchPokemonEvolution = async (name, id) => {
     getEvo(list, result);
     allResults.push(result);
   });
-  console.log(allResults);
 
   const list = allResults.filter((list) => list.includes(name));
-  console.log(list);
+
   return list;
 };
 
