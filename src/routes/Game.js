@@ -17,8 +17,10 @@ export default function Game() {
   };
   const [data, setData] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [answer, setAnswer] = useState('');
 
   function buttonHandler(e) {
+    setAnswer(e.target.value);
     if (e.target.value === data.name) {
       dispatch({ type: 'right' });
     }
@@ -49,9 +51,12 @@ export default function Game() {
       dispatch({ type: 'gameover' });
     } else {
       if (!state.isGameOver) {
-        setTimeout(() => {
+        const timeId = setTimeout(() => {
           dispatch({ type: 'next' });
         }, 2000);
+        return () => {
+          clearTimeout(timeId);
+        };
       } else {
         return;
       }
@@ -93,28 +98,28 @@ export default function Game() {
     }
   }
 
-  // const setBackgroundColor = (option) => {
-  //   if (reveal) {
-  //     if (answer === data.name) {
-  //       if (answer === option) {
-  //         return 'rgb(157, 229, 157)';
-  //       }
-  //       if (answer !== option) {
-  //         return 'white';
-  //       }
-  //     }
-  //     if (answer !== data.name) {
-  //       if (answer === option) {
-  //         return 'rgb(238, 171, 171)';
-  //       }
-  //       if (option === data.name) {
-  //         return 'rgb(157, 229, 157)';
-  //       }
-  //     } else {
-  //       return 'white';
-  //     }
-  //   }
-  // };
+  const setBackgroundColor = (option) => {
+    if (state.isRevealed) {
+      if (answer === data.name) {
+        if (answer === option) {
+          return 'rgb(157, 229, 157)';
+        }
+        if (answer !== option) {
+          return 'white';
+        }
+      }
+      if (answer !== data.name) {
+        if (answer === option) {
+          return 'rgb(238, 171, 171)';
+        }
+        if (option === data.name) {
+          return 'rgb(157, 229, 157)';
+        }
+      } else {
+        return 'white';
+      }
+    }
+  };
 
   return (
     <>
@@ -164,7 +169,7 @@ export default function Game() {
                 }}
                 key={i}
                 value={option}
-                // style={{ background: setBackgroundColor(option) }}
+                style={{ background: setBackgroundColor(option) }}
               >
                 {changePokemonNameCase(option)}
               </button>
